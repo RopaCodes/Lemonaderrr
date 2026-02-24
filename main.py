@@ -1,6 +1,7 @@
 import pygame, os, sys, time
 #import classes
-from entities import ExtrasContainer,Grass, Sugar, FruitContainer, IceBucket, LemonadeStand, WaterJug, BasicLemonade
+from entities import ExtrasContainer,Grass, Sugar, FruitContainer
+from entities import SpriteSheet, IceBucket, LemonadeStand, WaterJug
 # pygame setup
 #find and replace = ctrl + shift + F
 clock = pygame.time.Clock()
@@ -59,9 +60,11 @@ class Game:
         water_jug = WaterJug(self.display,self.screen_width,self.screen_height)
         water_jug.draw_img()
 
-        basic_lemonade = BasicLemonade(self.display,self.screen_width,self.screen_height)
-        basic_lemonade.draw_img()
-        #basic_lem0 = basic_lemonade.get_img()
+        sprite_sheet_basic_lem = pygame.image.load("assets/sprite_sheet_basic_lemonade.png")
+        sprite_sheet_basic = SpriteSheet(sprite_sheet_basic_lem)
+        frame0 = sprite_sheet_basic.get_img(0,256,256,1)
+        scaled_drink = pygame.transform.scale(frame0,(110,110))
+        self.display.blit(scaled_drink,(430,(self.screen_height-354)))
 
     #-------update display
     def update_display(self):
