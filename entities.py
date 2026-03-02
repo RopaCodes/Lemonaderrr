@@ -1,4 +1,11 @@
-import pygame
+import pygame, random
+#from recipies import generate_basic_lem_rec
+pygame.init()
+#font
+font_path = "assets/grow_year_regular.ttf"
+menu_title_font = pygame.font.Font(font_path, 30)
+menu_numbers_font = pygame.font.Font(font_path, 24)
+
 class LemonadeStand:
     def __init__(self,display,display_w,display_h):
         self.display = display
@@ -12,7 +19,7 @@ class LemonadeStand:
         self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
         #self.img.convert_alpha()
     def draw_img(self):
-        self.display.blit(self.img,((self.display_w-775),(self.display_h-600)))
+        self.display.blit(self.img,((self.display_w-675),(self.display_h-600)))
         
 class Grass:
     def __init__(self,display,display_w,display_h):
@@ -80,7 +87,7 @@ class Sugar:
         self.display_w = display_w
         self.display_h = display_h
         self.display = display
-        self.x_pos = 540
+        self.x_pos = 650
         self.y_pos = self.display_h-370
         self.width = 130
         self.height = 130
@@ -95,13 +102,14 @@ class WaterJug:
         self.display_w = display_w
         self.display_h = display_h
         self.display = display
-        self.x_pos = 230
+        self.x_pos = 340
         self.y_pos = self.display_h-451
         self.width = 240
         self.height = 240
         self.img_load = pygame.image.load('assets/water_jug.png').convert_alpha()
         self.img = pygame.transform.scale(self.img_load,(self.width,self.height)).convert_alpha()
-        #self.img.convert_alpha()
+        
+        
     def draw_img(self):
         self.display.blit(self.img,(self.x_pos,self.y_pos))
 
@@ -115,4 +123,54 @@ class SpriteSheet:
         img = pygame.transform.scale(img,(width*scale,height*scale)).convert_alpha()
         
         return img
+    
+##MENU MECHANIC
+class BasicLemMenu:
+    def __init__(self,display,display_w,display_h):
+        self.display_w = display_w
+        self.display_h = display_h
+        self.display = display
+        self.x_pos = 130
+        self.y_pos = self.display_h-690
+        self.width = 570
+        self.height = 570
+
+        self.img_load = pygame.image.load('assets/basic_lemonade_recipie.png').convert_alpha()
+        self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
+        self.doing_order = False
+        self.grey_txt_color= (34, 36, 49)
+
+        self.generate_new_order()
+
+    def draw_img(self):
+        self.display.blit(self.img,(self.x_pos-250,self.y_pos))
+
+    def generate_new_order(self):
+        self.basic_lem_water = 1
+        self.basic_lem_ice = random.randint(2, 6)
+        self.basic_lem_sugar = random.randint(2, 5)
+        self.basic_lem_squeezes = random.randint(2, 6)
+
+    def draw_recipie(self):
+        drink_name_surf = menu_title_font.render("Basic Lemonade",True,self.grey_txt_color)
+        self.display.blit(drink_name_surf,((90,225)))
+
+        water_surf = menu_numbers_font.render(str(self.basic_lem_water),True,self.grey_txt_color)
+        self.display.blit(water_surf,((130,290)))
+
+        ice_surf = menu_numbers_font.render(str(self.basic_lem_ice),True,self.grey_txt_color)
+        self.display.blit(ice_surf,((130+90,290)))
+
+        sugar_surf = menu_numbers_font.render(str(self.basic_lem_sugar),True,self.grey_txt_color)
+        self.display.blit(sugar_surf,((130+180,290)))
+
+        squeezes_surf = menu_numbers_font.render(str(self.basic_lem_squeezes),True,self.grey_txt_color)
+        self.display.blit(squeezes_surf,((130,345)))
+        
+        
+            
+
+        
+
+    
 
