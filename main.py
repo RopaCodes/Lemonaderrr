@@ -1,11 +1,11 @@
 import pygame, os, sys, time
 #import classes
-from entities import ExtrasContainer,Grass, Sugar, FruitContainer
+from entities import ExtrasContainer,Grass, Sugar, FruitContainer, BasicLemMenu
 from entities import SpriteSheet, IceBucket, LemonadeStand, WaterJug
 # pygame setup
 #find and replace = ctrl + shift + F
 clock = pygame.time.Clock()
-#functions
+
 
 class Game:
     def __init__(self):
@@ -16,6 +16,23 @@ class Game:
         self.display = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.clock =  pygame.time.Clock()
         pygame.display.set_caption('Lemonaderrr')
+
+        #OBJECT CREATION
+        self.grass = Grass(self.display, self.screen_width, self.screen_height)
+        self.lemonade_stand = LemonadeStand(self.display, self.screen_width, self.screen_height)
+        self.extras_container = ExtrasContainer(self.display, self.screen_width, self.screen_height)
+        self.fruit_container = FruitContainer(self.display, self.screen_width, self.screen_height)
+        self.ice_bucket = IceBucket(self.display, self.screen_width, self.screen_height)
+        self.sugar_bag = Sugar(self.display, self.screen_width, self.screen_height)
+        self.water_jug = WaterJug(self.display, self.screen_width, self.screen_height)
+        self.basic_lem_menu = BasicLemMenu(self.display, self.screen_width, self.screen_height)
+        self.basic_lem_menu = BasicLemMenu(self.display, self.screen_width, self.screen_height)
+
+        #SPRITE SHEET
+        self.sprite_sheet_basic_lem = pygame.image.load("assets/sprite_sheet_basic_lemonade.png")
+        self.sprite_sheet_basic = SpriteSheet(self.sprite_sheet_basic_lem)
+        self.frame0 = self.sprite_sheet_basic.get_img(0,256,256,1)
+        self.scaled_drink = pygame.transform.scale(self.frame0,(110,110))
 
     def run(self):
         while True:
@@ -39,32 +56,21 @@ class Game:
         self.display.fill((237, 218, 239))
 
         #ENTITIES
-        grass = Grass(self.display,self.screen_width,self.screen_height)
-        grass.draw_img()
-
-        lemonade_stand = LemonadeStand(self.display,self.screen_width,self.screen_height)
-        lemonade_stand.draw_img()
-
-        extras_container = ExtrasContainer(self.display,self.screen_width,self.screen_height)
-        extras_container.draw_img()
-
-        fruit_container = FruitContainer(self.display,self.screen_width,self.screen_height)
-        fruit_container.draw_img()
-
-        ice_bucket = IceBucket(self.display,self.screen_width,self.screen_height)
-        ice_bucket.draw_img()
-
-        sugar_bag = Sugar(self.display,self.screen_width,self.screen_height)
-        sugar_bag.draw_img()
-
-        water_jug = WaterJug(self.display,self.screen_width,self.screen_height)
-        water_jug.draw_img()
-
-        sprite_sheet_basic_lem = pygame.image.load("assets/sprite_sheet_basic_lemonade.png")
-        sprite_sheet_basic = SpriteSheet(sprite_sheet_basic_lem)
-        frame0 = sprite_sheet_basic.get_img(0,256,256,1)
-        scaled_drink = pygame.transform.scale(frame0,(110,110))
-        self.display.blit(scaled_drink,(430,(self.screen_height-354)))
+        self.grass.draw_img()
+        self.lemonade_stand.draw_img()
+        self.extras_container.draw_img()
+        self.fruit_container.draw_img()
+        self.ice_bucket.draw_img()
+        self.sugar_bag.draw_img()
+        self.water_jug.draw_img()   
+        self.display.blit(self.scaled_drink,(540,(self.screen_height-354)))
+        
+    ##MENU STUFF
+        #basic_lem_menu = BasicLemMenu(self.display,self.screen_width,self.screen_height)
+        self.basic_lem_menu.draw_img()
+        if self.basic_lem_menu.doing_order == False:
+            self.basic_lem_menu.draw_recipie()
+            #basic_lem_menu = True
 
     #-------update display
     def update_display(self):
