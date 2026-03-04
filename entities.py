@@ -5,7 +5,23 @@ pygame.init()
 font_path = "assets/grow_year_regular.ttf"
 menu_title_font = pygame.font.Font(font_path, 30)
 menu_numbers_font = pygame.font.Font(font_path, 24)
+grey_txt_color= (34, 36, 49)
+#functions
 
+
+
+#classes
+class MoneySystem:
+    def __init__(self,display,display_w,display_h,money_earned):
+        self.display = display
+        self.display_w = display_w
+        self.display_h = display_h
+        self.x_pos = self.display_w-150
+        self.y_pos = 20
+        self.money_earned = money_earned
+    def draw_text(self):
+        money_surf = menu_title_font.render("$"+str(self.money_earned),True,grey_txt_color)
+        self.display.blit(money_surf,((self.x_pos,self.y_pos)))
 class LemonadeStand:
     def __init__(self,display,display_w,display_h):
         self.display = display
@@ -98,7 +114,7 @@ class Sugar:
         self.display.blit(self.img,(self.x_pos,self.y_pos))
 
 class WaterJug:
-    def __init__(self,display,display_w,display_h):
+    def __init__(self,display,display_w,display_h, menu, frame_number,money_earned):
         self.display_w = display_w
         self.display_h = display_h
         self.display = display
@@ -108,14 +124,39 @@ class WaterJug:
         self.height = 240
         self.img_load = pygame.image.load('assets/water_jug.png').convert_alpha()
         self.img = pygame.transform.scale(self.img_load,(self.width,self.height)).convert_alpha()
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos,self.y_pos))
+        self.mouse_pos = pygame.mouse.get_pos()  #checks mouse pos when the obj is created
+        self.menu = menu
+        self.num_clicked = 0
+        self.correct_amm = False
+        self.frame_number = frame_number
+        self.money_system = money_earned
         
         
     def draw_img(self):
         self.display.blit(self.img,(self.x_pos,self.y_pos))
 
+    def check_collision(self):
+        #need to check the mouse pos also after the obj is created
+        self.mouse_pos = pygame.mouse.get_pos()
+        if self.img_rect.collidepoint(self.mouse_pos):
+            self.num_clicked += 1
+              
+            if self.num_clicked == self.menu.basic_lem_water:
+                self.correct_amm = True
+                self.frame_number += 1
+                self.money_system.money_earned += 1
+                
+            else:
+                self.correct_amm = False
+                self.money_system.money_earned -= 1
+                
+
+
 class SpriteSheet:
     def __init__(self,img):
         self.sheet_img = img
+        
     def get_img(self,frame,width,height,scale):
         #SRCALPHA removes the black on the sprite
         img = pygame.Surface((width,height),pygame.SRCALPHA)
@@ -138,7 +179,7 @@ class BasicLemMenu:
         self.img_load = pygame.image.load('assets/basic_lemonade_recipie.png').convert_alpha()
         self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
         self.doing_order = False
-        self.grey_txt_color= (34, 36, 49)
+        
 
         self.generate_new_order()
 
@@ -150,21 +191,22 @@ class BasicLemMenu:
         self.basic_lem_ice = random.randint(2, 6)
         self.basic_lem_sugar = random.randint(2, 5)
         self.basic_lem_squeezes = random.randint(2, 6)
+        #return self.basic_lem_ice, self.basic_lem_squeezes, self.
 
     def draw_recipie(self):
-        drink_name_surf = menu_title_font.render("Basic Lemonade",True,self.grey_txt_color)
+        drink_name_surf = menu_title_font.render("Basic Lemonade",True,grey_txt_color)
         self.display.blit(drink_name_surf,((90,225)))
 
-        water_surf = menu_numbers_font.render(str(self.basic_lem_water),True,self.grey_txt_color)
+        water_surf = menu_numbers_font.render(str(self.basic_lem_water),True,grey_txt_color)
         self.display.blit(water_surf,((130,290)))
 
-        ice_surf = menu_numbers_font.render(str(self.basic_lem_ice),True,self.grey_txt_color)
+        ice_surf = menu_numbers_font.render(str(self.basic_lem_ice),True,grey_txt_color)
         self.display.blit(ice_surf,((130+90,290)))
 
-        sugar_surf = menu_numbers_font.render(str(self.basic_lem_sugar),True,self.grey_txt_color)
+        sugar_surf = menu_numbers_font.render(str(self.basic_lem_sugar),True,grey_txt_color)
         self.display.blit(sugar_surf,((130+180,290)))
 
-        squeezes_surf = menu_numbers_font.render(str(self.basic_lem_squeezes),True,self.grey_txt_color)
+        squeezes_surf = menu_numbers_font.render(str(self.basic_lem_squeezes),True,grey_txt_color)
         self.display.blit(squeezes_surf,((130,345)))
         
         
