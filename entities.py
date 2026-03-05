@@ -260,9 +260,29 @@ class BasicLemMenu:
         squeezes_surf = menu_numbers_font.render(str(self.basic_lem_squeezes),True,grey_txt_color)
         self.display.blit(squeezes_surf,((130,345)))
         
+class DoneBtn:
+    def __init__(self, display, display_w, display_h, menu):
+        self.display = display
+        self.display_w = display_w
+        self.display_h = display_h
+        #self.game = game
+        self.x_pos = self.display_w-300
+        self.y_pos = 130
+        self.width = 400
+        self.height = 400
+        self.img_load = pygame.image.load('assets/done_btn.png').convert_alpha()
+        self.img = pygame.transform.scale(self.img_load, (self.width, self.height))
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.menu = menu
 
+    def draw_img(self):
+        self.display.blit(self.img, (self.x_pos, self.y_pos))
+
+    def check_collision(self):
+        mouse_pos = pygame.mouse.get_pos()
+        if self.img_rect.collidepoint(mouse_pos):
+            self.menu.generate_new_order()
             
-
         
 
     
