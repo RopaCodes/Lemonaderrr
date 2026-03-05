@@ -1,6 +1,6 @@
 import pygame, os, sys, time
 #import classes
-from entities import ExtrasContainer,Grass, Sugar, FruitContainer, BasicLemMenu
+from entities import ExtrasContainer,Grass, Sugar, FruitContainer, BasicLemMenu, DoneBtn
 from entities import SpriteSheet, IceBucket, LemonadeStand, WaterJug, MoneySystem
 # pygame setup
 #find and replace = ctrl + shift + F
@@ -30,6 +30,7 @@ class Game:
         self.ice_bucket = IceBucket(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
         self.sugar_bag = Sugar(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
         self.water_jug = WaterJug(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
+        self.done_btn = DoneBtn(self.display, self.screen_width, self.screen_height,self.basic_lem_menu)
         
 
         #SPRITE SHEET
@@ -66,6 +67,7 @@ class Game:
                     self.water_jug.check_collision()
                     self.sugar_bag.check_collision()
                     self.ice_bucket.check_collision()
+                    self.done_btn.check_collision()
 
                     self.check_recipie_complete()
 
@@ -84,6 +86,7 @@ class Game:
         self.ice_bucket.draw_img()
         self.sugar_bag.draw_img()
         self.water_jug.draw_img()   
+        
         #self.display.blit(self.scaled_drink,(540,(self.screen_height-354)))
         current_frame = self.drink_progress
         frame_img = self.sprite_sheet_basic.get_img(current_frame, 256, 256, 1)
@@ -96,6 +99,7 @@ class Game:
         if self.basic_lem_menu.doing_order == False:
             self.basic_lem_menu.draw_recipie()
             #basic_lem_menu = True
+        self.done_btn.draw_img()
 
     #-------update display
     def update_display(self):
