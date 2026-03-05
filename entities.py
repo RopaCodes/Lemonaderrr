@@ -84,74 +84,125 @@ class FruitContainer:
         self.display.blit(self.img,(self.x_pos,self.y_pos))
 
 class IceBucket:
-    def __init__(self,display,display_w,display_h):
+    def __init__(self, display, display_w, display_h, menu, money_earned, game):
         self.display = display
         self.display_w = display_w
         self.display_h = display_h
+        self.game = game
         self.x_pos = 250
-        self.y_pos = self.display_h-200
+        self.y_pos = self.display_h - 200
         self.width = 190
         self.height = 190
         self.img_load = pygame.image.load('assets/ice_bucket.png').convert_alpha()
-        self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
-        #self.img.convert_alpha()
-    def draw_img(self):
-        self.display.blit(self.img,(self.x_pos,self.y_pos))
-
-class Sugar:
-    def __init__(self,display,display_w,display_h):
-        self.display_w = display_w
-        self.display_h = display_h
-        self.display = display
-        self.x_pos = 650
-        self.y_pos = self.display_h-370
-        self.width = 130
-        self.height = 130
-        self.img_load = pygame.image.load('assets/sugar.png').convert_alpha()
-        self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
-        #self.img.convert_alpha()
-    def draw_img(self):
-        self.display.blit(self.img,(self.x_pos,self.y_pos))
-
-class WaterJug:
-    def __init__(self,display,display_w,display_h, menu, frame_number,money_earned):
-        self.display_w = display_w
-        self.display_h = display_h
-        self.display = display
-        self.x_pos = 340
-        self.y_pos = self.display_h-451
-        self.width = 240
-        self.height = 240
-        self.img_load = pygame.image.load('assets/water_jug.png').convert_alpha()
-        self.img = pygame.transform.scale(self.img_load,(self.width,self.height)).convert_alpha()
-        self.img_rect = self.img.get_rect(topleft=(self.x_pos,self.y_pos))
-        self.mouse_pos = pygame.mouse.get_pos()  #checks mouse pos when the obj is created
+        self.img = pygame.transform.scale(self.img_load, (self.width, self.height))
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
         self.menu = menu
         self.num_clicked = 0
         self.correct_amm = False
-        self.frame_number = frame_number
+        self.clicked = False
         self.money_system = money_earned
-        
-        
+
     def draw_img(self):
-        self.display.blit(self.img,(self.x_pos,self.y_pos))
+        self.display.blit(self.img, (self.x_pos, self.y_pos))
 
     def check_collision(self):
-        #need to check the mouse pos also after the obj is created
-        self.mouse_pos = pygame.mouse.get_pos()
-        if self.img_rect.collidepoint(self.mouse_pos):
-            self.num_clicked += 1
-              
-            if self.num_clicked == self.menu.basic_lem_water:
-                self.correct_amm = True
-                self.frame_number += 1
-                self.money_system.money_earned += 1
-                
-            else:
-                self.correct_amm = False
-                self.money_system.money_earned -= 1
-                
 
+        mouse_pos = pygame.mouse.get_pos()
+
+        if self.img_rect.collidepoint(mouse_pos):
+            self.num_clicked += 1
+            #print("IceBucket click:", self.num_clicked)  # change label per class
+
+            if self.num_clicked == 1:
+                self.game.drink_progress += 1
+
+            if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
+                self.money_system.money_earned += 1
+            else:
+                self.money_system.money_earned -= 1
+
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
+
+
+class Sugar:
+    def __init__(self, display, display_w, display_h, menu, money_earned, game):
+        self.display = display
+        self.display_w = display_w
+        self.display_h = display_h
+        self.game = game
+        self.x_pos = 650
+        self.y_pos = self.display_h - 370
+        self.width = 130
+        self.height = 130
+        self.img_load = pygame.image.load('assets/sugar.png').convert_alpha()
+        self.img = pygame.transform.scale(self.img_load, (self.width, self.height))
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.menu = menu
+        self.num_clicked = 0
+        self.correct_amm = False
+        self.clicked = False
+        self.money_system = money_earned
+
+    def draw_img(self):
+        self.display.blit(self.img, (self.x_pos, self.y_pos))
+
+    def check_collision(self):
+    
+        mouse_pos = pygame.mouse.get_pos()
+
+        if self.img_rect.collidepoint(mouse_pos):
+            self.num_clicked += 1
+            #print("IceBucket click:", self.num_clicked)  # change label per class
+
+            if self.num_clicked == 1:
+                self.game.drink_progress += 1
+
+            if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
+                self.money_system.money_earned += 1
+            else:
+                self.money_system.money_earned -= 1
+
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
+
+
+class WaterJug:
+    def __init__(self, display, display_w, display_h, menu, money_earned, game):
+        self.display = display
+        self.display_w = display_w
+        self.display_h = display_h
+        self.game = game
+        self.x_pos = 340
+        self.y_pos = self.display_h - 451
+        self.width = 240
+        self.height = 240
+        self.img_load = pygame.image.load('assets/water_jug.png').convert_alpha()
+        self.img = pygame.transform.scale(self.img_load, (self.width, self.height))
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
+        self.menu = menu
+        self.num_clicked = 0
+        self.correct_amm = False
+        self.clicked = False
+        self.money_system = money_earned
+
+    def draw_img(self):
+        self.display.blit(self.img, (self.x_pos, self.y_pos))
+
+    def check_collision(self):
+        mouse_pos = pygame.mouse.get_pos()
+
+        if self.img_rect.collidepoint(mouse_pos):
+            self.num_clicked += 1
+            #print("IceBucket click:", self.num_clicked)  # change label per class
+
+            if self.num_clicked == 1:
+                self.game.drink_progress += 1
+
+            if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
+                self.money_system.money_earned += 1
+            else:
+                self.money_system.money_earned -= 1
+
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
 
 class SpriteSheet:
     def __init__(self,img):
@@ -209,7 +260,7 @@ class BasicLemMenu:
         squeezes_surf = menu_numbers_font.render(str(self.basic_lem_squeezes),True,grey_txt_color)
         self.display.blit(squeezes_surf,((130,345)))
         
-        
+
             
 
         
