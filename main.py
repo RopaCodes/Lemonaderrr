@@ -6,7 +6,6 @@ from entities import SpriteSheet, IceBucket, LemonadeStand, WaterJug, MoneySyste
 #find and replace = ctrl + shift + F
 clock = pygame.time.Clock()
 
-
 class Game:
     def __init__(self):
         pygame.init()
@@ -30,7 +29,7 @@ class Game:
         self.ice_bucket = IceBucket(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
         self.sugar_bag = Sugar(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
         self.water_jug = WaterJug(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self.money_status,self)
-        self.done_btn = DoneBtn(self.display, self.screen_width, self.screen_height,self.basic_lem_menu)
+        self.done_btn = DoneBtn(self.display, self.screen_width, self.screen_height,self.basic_lem_menu,self)
         
 
         #SPRITE SHEET
@@ -46,6 +45,7 @@ class Game:
             self.sugar_bag.correct_amm
         ):
             self.money_status.money_earned += 5
+            
 
     def run(self):
         while True:
