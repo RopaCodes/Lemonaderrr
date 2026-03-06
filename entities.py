@@ -6,9 +6,14 @@ font_path = "assets/grow_year_regular.ttf"
 menu_title_font = pygame.font.Font(font_path, 30)
 menu_numbers_font = pygame.font.Font(font_path, 24)
 grey_txt_color= (34, 36, 49)
-#functions
 
-
+#sounds
+done_note = pygame.mixer.Sound("assets/soundFx/done_notification.wav")
+ice_cube_drop = pygame.mixer.Sound("assets/soundFx/ice_cube_drop.wav")
+sugar_pour = pygame.mixer.Sound("assets/soundFx/sugar_pour.wav")
+water_pour = pygame.mixer.Sound("assets/soundFx/water_pour.wav")
+money_chime = pygame.mixer.Sound("assets/soundFx/money_chime.wav")
+money_wrong = pygame.mixer.Sound("assets/soundFx/money_wrong.wav")
 
 #classes
 class MoneySystem:
@@ -111,15 +116,20 @@ class IceBucket:
 
         if self.img_rect.collidepoint(mouse_pos):
             self.num_clicked += 1
-            #print("IceBucket click:", self.num_clicked)  # change label per class
-
+            
+            
             if self.num_clicked == 1:
                 self.game.drink_progress += 1
 
             if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
                 self.money_system.money_earned += 1
+                ice_cube_drop.play()
+                if self.num_clicked == self.menu.basic_lem_ice:
+                    money_chime.play()  
+                
             else:
                 self.money_system.money_earned -= 1
+                money_wrong.play()
 
             self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
 
@@ -152,17 +162,22 @@ class Sugar:
 
         if self.img_rect.collidepoint(mouse_pos):
             self.num_clicked += 1
+            
             #print("IceBucket click:", self.num_clicked)  # change label per class
 
             if self.num_clicked == 1:
                 self.game.drink_progress += 1
 
-            if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
+            if self.num_clicked <= self.menu.basic_lem_sugar:  # change to matching var per class
                 self.money_system.money_earned += 1
+                sugar_pour.play()
+                if self.num_clicked == self.menu.basic_lem_sugar:
+                    money_chime.play()
             else:
                 self.money_system.money_earned -= 1
+                money_wrong.play()
 
-            self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_sugar)  # change per class
 
 
 class WaterJug:
@@ -192,17 +207,22 @@ class WaterJug:
 
         if self.img_rect.collidepoint(mouse_pos):
             self.num_clicked += 1
+            
             #print("IceBucket click:", self.num_clicked)  # change label per class
 
             if self.num_clicked == 1:
                 self.game.drink_progress += 1
 
-            if self.num_clicked <= self.menu.basic_lem_ice:  # change to matching var per class
+            if self.num_clicked <= self.menu.basic_lem_water:  # change to matching var per class
                 self.money_system.money_earned += 1
+                water_pour.play()
+                if self.num_clicked == self.menu.basic_lem_water:
+                    money_chime.play()
             else:
                 self.money_system.money_earned -= 1
+                money_wrong.play()
 
-            self.correct_amm = (self.num_clicked == self.menu.basic_lem_ice)  # change per class
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_water)  # change per class
 
 class SpriteSheet:
     def __init__(self,img):
@@ -261,15 +281,15 @@ class BasicLemMenu:
         self.display.blit(squeezes_surf,((130,345)))
         
 class DoneBtn:
-    def __init__(self, display, display_w, display_h, menu):
+    def __init__(self, display, display_w, display_h, menu,game):
         self.display = display
         self.display_w = display_w
         self.display_h = display_h
-        #self.game = game
-        self.x_pos = self.display_w-300
-        self.y_pos = 130
-        self.width = 400
-        self.height = 400
+        self.game = game
+        self.x_pos = self.display_w-120
+        self.y_pos = 260
+        self.width = 85
+        self.height = 75
         self.img_load = pygame.image.load('assets/done_btn.png').convert_alpha()
         self.img = pygame.transform.scale(self.img_load, (self.width, self.height))
         self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
@@ -282,6 +302,16 @@ class DoneBtn:
         mouse_pos = pygame.mouse.get_pos()
         if self.img_rect.collidepoint(mouse_pos):
             self.menu.generate_new_order()
+            done_note.play()
+            self.game.drink_progress = 0
+
+            #reset ingredients
+            self.game.ice_bucket.num_clicked = 0
+            self.game.ice_bucket.correct_amm = False
+            self.game.sugar_bag.num_clicked = 0
+            self.game.sugar_bag.correct_amm = False
+            self.game.water_jug.num_clicked = 0
+            self.game.water_jug.correct_amm = False
             
         
 
