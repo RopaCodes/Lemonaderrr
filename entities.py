@@ -14,6 +14,7 @@ sugar_pour = pygame.mixer.Sound("assets/soundFx/sugar_pour.wav")
 water_pour = pygame.mixer.Sound("assets/soundFx/water_pour.wav")
 money_chime = pygame.mixer.Sound("assets/soundFx/money_chime.wav")
 money_wrong = pygame.mixer.Sound("assets/soundFx/money_wrong.wav")
+squeezing_lemon = pygame.mixer.Sound("assets/soundFx/squeeze_lem.wav")
 
 #classes
 class MoneySystem:
@@ -74,7 +75,7 @@ class ExtrasContainer:
         self.display.blit(self.img,(self.x_pos,self.y_pos))
 
 class FruitContainer:
-    def __init__(self,display,display_w,display_h):
+    def __init__(self,display,display_w,display_h,lemon_held,menu,clicked,money_earned,game):
         self.display = display
         self.display_w = display_w
         self.display_h = display_h
@@ -84,9 +85,44 @@ class FruitContainer:
         self.y_pos = self.display_h-270
         self.img_load = pygame.image.load('assets/fruit_cont.png').convert_alpha()
         self.img = pygame.transform.scale(self.img_load,(self.width,self.height))
-        #self.img.convert_alpha()
+        self.img_rect = self.img.get_rect(topleft=(self.x_pos, self.y_pos))
+
+        self.correct_amm = False
+        self.num_clicked = 0
+
+        self.lemon_load = pygame.image.load('assets/lemon.PNG')
+        self.lemon = pygame.transform.scale(self.lemon_load,(120,120))
+        self.lemon_rect = self.lemon.get_rect()
+        self.lemons = []
+        self.menu = menu
+        self.game = game
+        self.clicked = clicked
+        self.lemon_held = lemon_held
+
+        self.money_system = money_earned
+
     def draw_img(self):
         self.display.blit(self.img,(self.x_pos,self.y_pos))
+
+    def check_collision(self):
+        mouse_pos = pygame.mouse.get_pos()
+        if self.img_rect.collidepoint(mouse_pos):
+            self.lemon_held = True
+            self.num_clicked += 1
+            if self.num_clicked == 1:
+                self.game.drink_progress += 1
+            if self.num_clicked <= self.menu.basic_lem_squeezes:
+                self.money_system.money_earned += 1
+                squeezing_lemon.play()
+                if self.num_clicked == self.menu.basic_lem_squeezes:
+                    money_chime.play
+            else:
+                self.money_system.money_earned -= 1
+                money_wrong.play()
+
+            self.correct_amm = (self.num_clicked == self.menu.basic_lem_water)  # change per class   
+        
+        
 
 class IceBucket:
     def __init__(self, display, display_w, display_h, menu, money_earned, game):
@@ -227,13 +263,12 @@ class WaterJug:
 class SpriteSheet:
     def __init__(self,img):
         self.sheet_img = img
+        self.img_rect = None
         
-    def get_img(self,frame,width,height,scale):
-        #SRCALPHA removes the black on the sprite
-        img = pygame.Surface((width,height),pygame.SRCALPHA)
-        img.blit(self.sheet_img,(0,0),((frame*width),0,width,height))
-        img = pygame.transform.scale(img,(width*scale,height*scale)).convert_alpha()
-        
+    def get_img(self, frame, width, height, scale):
+        img = pygame.Surface((width, height), pygame.SRCALPHA)
+        img.blit(self.sheet_img, (0, 0), ((frame * width), 0, width, height))
+        img = pygame.transform.scale(img, (width * scale, height * scale)).convert_alpha()
         return img
     
 ##MENU MECHANIC
@@ -304,7 +339,7 @@ class DoneBtn:
             self.menu.generate_new_order()
             done_note.play()
             self.game.drink_progress = 0
-
+            self.game.order_complete = False
             #reset ingredients
             self.game.ice_bucket.num_clicked = 0
             self.game.ice_bucket.correct_amm = False
@@ -312,8 +347,10 @@ class DoneBtn:
             self.game.sugar_bag.correct_amm = False
             self.game.water_jug.num_clicked = 0
             self.game.water_jug.correct_amm = False
+            self.game.fruit_container.num_clicked = 0
+            self.game.fruit_container.correct_amm = False
             
-        
+     
 
     
 
