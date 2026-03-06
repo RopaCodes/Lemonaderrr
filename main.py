@@ -88,7 +88,7 @@ class Game:
                             
                             self.state = "playing"
                         elif self.state == "gameover":
-                            pygame.mixer.music.stop()  # stop start screen music
+                            #pygame.mixer.music.stop() 
                             self.reset_game()
                             self.state = "playing"
                     
@@ -198,3 +198,4 @@ class Game:
         self.clock.tick(60)
             
 Game().run()
+
